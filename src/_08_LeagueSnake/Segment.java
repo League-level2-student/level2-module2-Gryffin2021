@@ -9,5 +9,10 @@ package _08_LeagueSnake;
  * 2. Add a constructor with parameters to initialize each variable.
  */
 public class Segment {
-    
+    int X;
+    int Y;
+    Segment(int x, int y) {
+    	X = x;
+    	Y = y;
+    }
 }

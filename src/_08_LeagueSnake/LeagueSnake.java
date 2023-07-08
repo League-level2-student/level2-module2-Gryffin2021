@@ -1,5 +1,7 @@
 package _08_LeagueSnake;
 
+import java.awt.Color;
+
 import processing.core.PApplet;
 
 public class LeagueSnake extends PApplet {
@@ -11,8 +13,11 @@ public class LeagueSnake extends PApplet {
      * 
      * Put all the game variables here.
      */
-    
-
+    Segment head;
+    int foodX;
+    int foodY;
+    int direction = UP;
+    int foodGobbled = 0;
     
     /*
      * Setup methods
@@ -21,17 +26,20 @@ public class LeagueSnake extends PApplet {
      */
     @Override
     public void settings() {
-        
+        size(500, 500);
     }
 
     @Override
     public void setup() {
-        
+        head = new Segment(0, 0);
+        frameRate(20);
+        dropFood();
     }
 
     void dropFood() {
         // Set the food in a new random location
-        
+    	foodX = ((int)random(50)*10);
+    	foodY = ((int)random(50)*10);
     }
 
     /*
@@ -42,16 +50,22 @@ public class LeagueSnake extends PApplet {
 
     @Override
     public void draw() {
-        
+    	background(Color.black.getRGB());
+    	drawFood();
+    	move();
+    	drawSnake();
     }
 
     void drawFood() {
         // Draw the food
-        
+    	fill(255, 0, 0);
+        rect(foodX, foodY, 10, 10);
     }
 
     void drawSnake() {
         // Draw the head of the snake followed by its tail
+    	fill(0, 255, 0);
+        rect(head.X, head.Y, 10, 10);
     }
 
     void drawTail() {
@@ -86,30 +100,42 @@ public class LeagueSnake extends PApplet {
     @Override
     public void keyPressed() {
         // Set the direction of the snake according to the arrow keys pressed
-        
+        if(key == UP) {
+        	direction = UP;
+        }else if(key == DOWN) {
+        	direction = DOWN;
+        }else if(key == LEFT) {
+        	direction = LEFT;
+        }else if(key == RIGHT) {
+        	direction = RIGHT;
+        }
     }
 
     void move() {
         // Change the location of the Snake head based on the direction it is moving.
-
-        /*
         if (direction == UP) {
-            // Move head up
-            
+        	head.Y --;
         } else if (direction == DOWN) {
-            // Move head down
-                
+        	head.Y ++;
         } else if (direction == LEFT) {
-            
+            head.X ++;
         } else if (direction == RIGHT) {
-            
+            head.X --;
         }
-        */
+        checkBoundaries();
     }
 
     void checkBoundaries() {
         // If the snake leaves the frame, make it reappear on the other side
-        
+        if(head.Y > 500) {
+        	head.Y = 1;
+        }else if(head.Y < 0) {
+        	head.Y = 499;
+        }else if(head.X > 500) {
+        	head.X = 1;
+        }else if(head.X < 0) {
+        	head.X = 1;
+        }
     }
 
     void eat() {
