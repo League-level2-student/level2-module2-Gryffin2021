@@ -2,6 +2,7 @@ package _08_LeagueSnake;
 
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.Random;
 
 import processing.core.PApplet;
 
@@ -20,9 +21,9 @@ public class LeagueSnake extends PApplet {
     int foodY;
     int direction = UP;
     int foodGobbled = 0;
-    int r = 6;
+    int r = 10;
     int r2 = 4;
-    int speed = 4;
+    int speed = 10;
     /*
      * Setup methods
      * 
@@ -42,8 +43,10 @@ public class LeagueSnake extends PApplet {
 
     void dropFood() {
         // Set the food in a new random location
-    	foodX = ((int)random(50)*10);
-    	foodY = ((int)random(50)*10);
+    	foodX = (int)random(500-30) + 10 ;
+    	foodY = (int)random(500-30) + 10 ;
+    	System.out.println(foodX);
+    	System.out.println(foodY);
     }
 
     /*
@@ -59,6 +62,7 @@ public class LeagueSnake extends PApplet {
     	keyPressed();
     	move();
     	drawSnake();
+    	eat();
     }
 
     void drawFood() {
@@ -77,7 +81,7 @@ public class LeagueSnake extends PApplet {
     void drawTail() {
         // Draw each segment of the tail
     	for(Segment i : tail) {
-    	fill(0, 255, 0);
+    	fill(0, 200, 0);
         rect(i.X, i.Y, 10, 10);
     	}
     }
@@ -95,19 +99,18 @@ public class LeagueSnake extends PApplet {
     	checkTailCollision();
     	drawTail();
     	tail.add(0, new Segment(head.X, head.Y));
-    	tail.remove(tail.size() -1);
+    	tail.remove(tail.size()-1);
     }
 
     void checkTailCollision() {
         // If the snake crosses its own tail, shrink the tail back to one segment
     	for(Segment i : tail) {
-    	double beans = Math.sqrt(Math.pow(head.X - i.X, 2) + Math.pow(head.Y - i.Y, 2));
-    	if(beans < r2) {
-    		tail = new ArrayList<Segment>();
-    		tail.add(0, new Segment(head.X, head.Y));
+    		if(i.X == head.X && i.Y == head.Y) {
+    			tail = new ArrayList<Segment>();
     	}
     	}
-    }
+    	}
+   
 
     /*
      * Control methods
@@ -118,20 +121,19 @@ public class LeagueSnake extends PApplet {
     @Override
     public void keyPressed() { 
         // Set the direction of the snake according to the arrow keys pressed
-        if(keyCode == UP) {
+        if(keyCode == UP && direction != DOWN) {
         	direction = UP;
-        }else if(keyCode == DOWN) {
+        }else if(keyCode == DOWN && direction != UP) {
         	direction = DOWN;
-        }else if(keyCode == LEFT) {
+        }else if(keyCode == LEFT && direction != LEFT) {
         	direction = RIGHT;
-        }else if(keyCode == RIGHT) {
+        }else if(keyCode == RIGHT && direction != RIGHT) {
         	direction = LEFT;
         }
     }
 
     void move() {
         // Change the location of the Snake head based on the direction it is moving.
-    	double bean = Math.sqrt(Math.pow(head.X - foodX, 2) + Math.pow(head.Y - foodY, 2));
         if (direction == UP) {
         	head.Y -= speed;
         } else if (direction == DOWN) {
@@ -140,9 +142,6 @@ public class LeagueSnake extends PApplet {
             head.X += speed;
         } else if (direction == RIGHT) {
             head.X -= speed;
-        }if(bean < r){
-        	eat();
-    
         }
         checkBoundaries();
     }
@@ -163,9 +162,14 @@ public class LeagueSnake extends PApplet {
     void eat() {
         // When the snake eats the food, its tail should grow and more
         // food appear
+    	double bean = Math.sqrt(Math.pow(head.X - foodX, 2) + Math.pow(head.Y - foodY, 2));
+    	if(bean < r){
+        	System.out.println("ate");
+        	System.out.println(tail.size());
         	foodGobbled ++;
         	dropFood();
-        	tail.add(0, new Segment(head.X, head.Y));
+        	tail.add(new Segment(head.X, head.Y));
+    	}
     }
 
     static public void main(String[] passedArgs) {
